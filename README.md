@@ -25,4 +25,6 @@ I am highly sensitive to sleep, often finding myself deeply affected in terms of
     * Coffee: conversion to caffeine in mg is tricky due to extraction/brewing method. Currently mainly using pourover with V60, and due to variations in pour methods it is hard to pinpoint a value for the amount of caffeine. 
     * Gaming and alcohol: currently for simplicity, capturing the rough amount of alcohol for my personal taste/tolerance. Unlikely to be generalised to the general alcohol consumer since I drink quite little. Also captured hours to sleep to factor in the amount of time for alcohol to be broken down and removed from the system. For gaming, only capturing an indication variable of whether I gamed or not, and the time I stopped.
 
-Data was collected into a google sheet via the use of a google form. 
+* Data entry and importing 
+   * Data was collected into a google sheet via the use of a google form.
+   * [Created an API from google drive to read into Python/Pandas](https://medium.com/analytics-vidhya/how-to-read-and-write-data-to-google-spreadsheet-using-python-ebf54d51a72c)
