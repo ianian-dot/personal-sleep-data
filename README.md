@@ -1,3 +1,5 @@
+Inspirations: Matthew Walker, Andrew Huberman
+
 # Personal sleep project 
 
 Project outline
