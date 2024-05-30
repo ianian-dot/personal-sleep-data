@@ -1,0 +1,126 @@
+---
+title: "Modelling Deep Sleep data"
+author: "Ian Petrus Tan"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+library(tidyverse)
+library(ggplot2)
+cleaned_sleep_df <- read.csv('python_cleaned_sleep_df.csv')
+```
+
+
+# Type of linear model - should we use GLM?
+
+```{r visualise_outcome_distribution}
+cat('Range of values of deep sleep:' ,range(cleaned_sleep_df$Deep.Sleep.duration))
+
+ggplot(cleaned_sleep_df, aes(x = Deep.Sleep.duration)) +
+  geom_histogram(aes(y = ..density..), binwidth = 0.5, fill = "blue", color = "black") +# Adjust binwidth as needed
+  geom_density(alpha = 0.2, fill = "#FF6666") +
+  ggtitle("Distribution of Deep Sleep Duration") +
+  xlab("Deep Sleep Duration (hours)") +
+  ylab("Density") +
+  xlim(c(0, max(cleaned_sleep_df$Deep.Sleep.duration)+10))
+```
+
+The outcome distribution looks somewhat normally distributed.
+
+```{r clean_dataset}
+colnames(cleaned_sleep_df)
+df_model <- cleaned_sleep_df %>% select('Deep.Sleep.duration', 'Alcohol', 'Game.past.10pm', 'Exercise', 'Calories.count',
+'chamomile_after_10pm', 'Amount.of.sleep.hours', 'blackout.eye.mask.', 'day_of_week')
+```
+```{r verify_data}
+summary(df_model) ## NA spotted in calories count 
+
+## Check for the missing row 
+missing_index <- which(is.na(df_model['Calories.count']))
+df_model[missing_index,] ## Missing row is for the first obs with exercise = gym
+
+## Impute using Exercise information
+df_model$Calories.count <- ave(df_model$Calories.count, df_model$Exercise, FUN=function(x) 
+  ifelse(is.na(x), mean(x, na.rm=TRUE), x))
+
+## Check result 
+df_model[missing_index,] 
+```
+
+# Model 1: Full Standard Linear Model (normal errors)
+
+
+```{r model_1}
+model_1 <- df_model %>% lm(Deep.Sleep.duration ~ ., data = .)
+print(model_1)
+print(summary(model_1))
+m1_sum <- summary(model_1)
+
+## Model scores
+m1_sum$r.squared
+m1_sum$adj.r.squared
+## Evaluate model 
+library(car)
+vif(model_1)
+
+```
+
+We can see that the VIF of calories is really high, suggesting that it can be linearly predicted by the rest of the variables. 
+We can try a second model that excludes 
+
+# Feature selection
+
+```{r model_2}
+model_2 <- df_model %>% lm(Deep.Sleep.duration ~ . -Exercise, data = .)
+print(model_2)
+print(summary(model_2))
+m2_sum <- summary(model_2)
+
+## Model scores
+m2_sum$r.squared
+m2_sum$adj.r.squared
+## Evaluate model 
+vif(model_2)
+```
+
+The adjusted R^2 has significantly improved. 
+
+## Random forests
+```{r}
+library(randomForest)
+library(varImp)
+# df_model <- df_model %>%
+#   mutate(across(where(is.character), as.factor))
+
+## Split data into predictors and response
+predictors_df <- df_model %>% select(-Deep.Sleep.duration)
+response_df <- df_model$Deep.Sleep.duration
+
+## Fit Random Forest model
+rf_model <- randomForest(x = predictors_df, y = response_df, ntree = 500, mtry = floor(sqrt(ncol(predictors_df))), importance = TRUE)
+
+## Show results
+print(rf_model)
+
+## importance
+importance(rf_model)
+varImpPlot(rf_model)
+?importance
+
+```
+
+Compared to the second linear model, there is a drop in the percentage of variance explained. 
+
+On both accounts of importance (increase in error, and increase in node purity), amount of sleep edges out above the rest.
+It proves to be important to not skimp on sleep, i.e. it is hard to control what kind of sleep you get from the total duration. Best is just to sleep more. 
+Alcohol is a huge enemy of deep sleep, as shown, 
