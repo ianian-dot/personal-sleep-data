@@ -19,7 +19,9 @@ I am highly sensitive to sleep, often finding myself deeply affected in terms of
         2. Alcohol
         3. Gaming 
         4. Caffeine
-        5. Eating before sleeping (personal addiction)
+        5. Sleep mask
+        6. Music
+        7. Eating before sleeping
 
 * Data collection methods 
     * Deep sleep amount: AutoSleep app on Apple Watch SE (occasionally cross checked against Health app)
