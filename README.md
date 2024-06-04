@@ -1,6 +1,6 @@
 Inspirations: Matthew Walker, Andrew Huberman
 
-**View notebook on [nbviewer](https://nbviewer.org/github/ianian-dot/personal-sleep-data/blob/main/analysingsleep.ipynb)
+**View notebook on [nbviewer](https://nbviewer.org/github/ianian-dot/personal-sleep-data/blob/main/analysingsleep.ipynb)**
 
 # Personal sleep project 
 
