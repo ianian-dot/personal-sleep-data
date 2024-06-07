@@ -2,7 +2,7 @@ Inspirations: Matthew Walker, Andrew Huberman
 
 **View notebook on [nbviewer](https://nbviewer.org/github/ianian-dot/personal-sleep-data/blob/main/analysingsleep.ipynb)**
 
-**View linear model + random forest results using Rmd [here]**
+**View linear model + random forest results using Rmd [here](https://rpubs.com/jojorabbit1/1194011)**
 
 # Personal sleep project 
 
